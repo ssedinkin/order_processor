@@ -10,8 +10,12 @@ OrderProcessor::Controller::Example
 
 =cut
 
+use lib::abs '../../../../../../lib';
+
 use Carp;
 use Mojo::Base 'Mojolicious::Controller', -signatures;
+
+use OrderProcessor::Core;
 
 my $COMISSION_PERCENT = 5;
 
@@ -46,6 +50,51 @@ sub get_order_price {
         my $cost = $1;
 
         $output->{price} = $cost + ( $cost * $COMISSION_PERCENT / 100 );
+    }
+    else {
+        $output->{error} = 'BAD_INPUT';
+    }
+
+    $self->render( json => $output );
+}
+
+=head2 get_order_info
+
+Метод запроса стоимости заказа.
+На вход принимает цену товара.
+Возвращает стоимость - сумму с комиссией 5%.
+
+Отрендерит ответ в JSON.
+
+IN:
+    $self - объект Mojolicious
+
+OUT:
+    не важен - используется в void-контексте
+
+=cut
+
+sub get_order_info {
+    my ( $self ) = @_;
+
+    my $input  = $self->req->json;
+    my $output = { error => undef };
+
+    if ( !defined $input->{order_id} ) {
+        $output->{error} = 'BAD_INPUT';
+    }
+    elsif ( $input->{order_id} =~ /^([1-9]\d*)$/ ) {
+        my $order_id = $1;
+
+        my ( $cost, $price ) = OrderProcessor::Core::select( $order_id );
+
+        if ( !defined $cost && !defined $price ) {
+            $output->{error} = 'ORDER_NOT_EXISTS';
+        }
+        else {
+            $output->{cost}  = $cost;
+            $output->{price} = $price;
+        }
     }
     else {
         $output->{error} = 'BAD_INPUT';
