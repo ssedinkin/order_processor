@@ -67,7 +67,7 @@ sub get_order_price {
     elsif ( $input->{cost} =~ /^(\d+)$/ ) {
         my $cost = $1;
 
-        $output->{price} = $cost + ( $cost * $COMISSION_PERCENT / 100 );
+        $output->{price} = _calculate_order_price( $cost );
     }
     else {
         $output->{error} = 'BAD_INPUT';
