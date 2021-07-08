@@ -1,7 +1,31 @@
 package OrderProcessor::Controller::Example;
+
+=head1 NAME
+
+OrderProcessor::Controller::Example
+
+=head1 DESCRIPTION
+
+Контроллер для страницы "/".
+
+=cut
+
 use Mojo::Base 'Mojolicious::Controller', -signatures;
 
-# This action will render a template
+=head1 METHODS
+
+=head2 welcome
+
+Отрендерит стандартную страницу "/".
+
+IN:
+    $self - объект Mojolicious
+
+OUT:
+    не важен - используется в void-контексте
+
+=cut
+
 sub welcome {
     my ( $self ) = @_;
 
