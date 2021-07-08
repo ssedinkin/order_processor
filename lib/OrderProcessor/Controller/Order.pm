@@ -21,6 +21,24 @@ my $COMISSION_PERCENT = 5;
 
 =head1 METHODS
 
+=head2 _calculate_order_price
+
+Посчитать стоимость с комиссией.
+
+IN:
+    $cost - число, сколько стоит товар
+
+OUT:
+    $price - число, сколько стоит товар + комиссия
+
+=cut
+
+sub _calculate_order_price {
+    my ( $cost ) = @_;
+
+    return $cost + ( $cost * $COMISSION_PERCENT / 100 );
+}
+
 =head2 get_order_price
 
 Метод запроса стоимости заказа.
