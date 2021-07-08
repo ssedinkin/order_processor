@@ -2,7 +2,8 @@ package OrderProcessor;
 use Mojo::Base 'Mojolicious', -signatures;
 
 # This method will run once at server start
-sub startup ($self) {
+sub startup {
+    my ( $self ) = @_;
 
     # Load configuration from config file
     my $config = $self->plugin('NotYAMLConfig');

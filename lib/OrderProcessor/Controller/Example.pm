@@ -2,7 +2,8 @@ package OrderProcessor::Controller::Example;
 use Mojo::Base 'Mojolicious::Controller', -signatures;
 
 # This action will render a template
-sub welcome ($self) {
+sub welcome {
+    my ( $self ) = @_;
 
     # Render template "example/welcome.html.ep" with message
     $self->render(msg => 'Welcome to the Mojolicious real-time web framework!');
