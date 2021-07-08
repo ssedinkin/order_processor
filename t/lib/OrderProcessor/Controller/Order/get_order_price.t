@@ -167,4 +167,30 @@ describe 'Если в метод OrderProcessor::Controller::Order::get_order_pr
     };
 };
 
+describe 'Если в метод OrderProcessor::Controller::Order::get_order_price передать json, где параметр "cost" "0",' => sub {
+    it 'тогда он вернёт "0".' => sub {
+        my $mojo                = mock();
+        my $req                 = mock();
+        my $json                = { any => 777, cost => 0 };
+        my %render_input_expect = (
+            json => {
+                error => undef,
+                price => 0,
+            },
+        );
+
+        $mojo->expects( 'req' )->returns( $req );
+        $req->expects( 'json' )->returns( $json );
+        $mojo->expects( 'render' )->returns( sub {
+            my ( $self, %render_input_actual ) = @_;
+
+            is_deeply \%render_input_actual, \%render_input_expect;
+
+            return;
+        } );
+
+        OrderProcessor::Controller::Order::get_order_price( $mojo );
+    };
+};
+
 runtests;
