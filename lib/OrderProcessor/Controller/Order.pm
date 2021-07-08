@@ -121,4 +121,54 @@ sub get_order_info {
     $self->render( json => $output );
 }
 
+=head2 create_order
+
+Метод запроса стоимости заказа.
+На вход принимает цену товара.
+Возвращает стоимость - сумму с комиссией 5%.
+
+Отрендерит ответ в JSON.
+
+IN:
+    $self - объект Mojolicious
+
+OUT:
+    не важен - используется в void-контексте
+
+=cut
+
+sub create_order {
+    my ( $self ) = @_;
+
+    my $input  = $self->req->json;
+    my $output = { error => undef };
+
+    my $cost   = defined $input
+        ? $input->{cost}
+        : undef;
+
+    my $price  = defined $input
+        ? $input->{price}
+        : undef;
+
+    if ( !defined $cost || !defined $price ) {
+        $output->{error} = 'BAD_INPUT';
+    }
+    elsif ( $cost =~ /^\d+$/ && $price =~ /^\d+$/ ) {
+        my $calc_price = _calculate_order_price( $cost );
+
+        if ( $calc_price != $price ) {
+            $output->{error} = 'BAD_INPUT';
+        }
+        else {
+            $output->{order_id} = OrderProcessor::Core::insert( $cost, $price );
+        }
+    }
+    else {
+        $output->{error} = 'BAD_INPUT';
+    }
+
+    $self->render( json => $output );
+}
+
 1;
